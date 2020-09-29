@@ -1,0 +1,49 @@
+﻿@page "/Posts/EnumsExtensions"
+
+@attribute  [Post("C# Extenstions Method","Utility methods to work With enums in C#","29 September 2020")]
+
+<SinglePost HeaderImage="post-bg.jpg" Header1="C# Extenstions Method" Header2="" PublishTime="29 September 2020">
+    <Content>
+        <CodeSnippet Title="Convert String To Enum">
+            <Content>
+                @(@"public static class EnumExtensions
+{
+    public static T ToEnum<T>(this string value, bool ignoreCase = true)
+    {
+      return (T)Enum.Parse(typeof(T), value, ignoreCase);
+    }
+}")
+            </Content>
+        </CodeSnippet>
+
+        <CodeSnippet Title="Get Enum Attributes">
+            <Content>
+                @(@"public static class EnumExtensions
+{
+// This extension method is broken out so you can use a similar pattern with
+// other MetaData elements in the future. This is your base method for each.
+private static T GetAttribute<T>(this Enum value) where T : Attribute
+{
+    var type = value.GetType();
+    var memberInfo = type.GetMember(value.ToString());
+    var attributes = memberInfo[0].GetCustomAttributes(typeof(T), false);
+    return attributes.Length > 0
+        ? (T)attributes[0]
+        : null;
+}
+
+// This method creates a specific call to the above method, requesting the
+// Description MetaData attribute.
+public static string ToName(this Enum value)
+{
+    var attribute = value.GetAttribute<DescriptionAttribute>();
+    return attribute == null ? value.ToString() : attribute.Description;
+}
+}")
+            </Content>
+        </CodeSnippet>
+    </Content>
+</SinglePost>
+
+@code {
+}
